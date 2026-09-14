@@ -16,3 +16,6 @@ Markdown
 1. Установка зависимостей:
    ```bash
    uv sync
+
+## Deployed Application
+https://devops-engineer-from-scratch-project-313-ps1s.onrender.com/ping
