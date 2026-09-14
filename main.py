@@ -1,8 +1,8 @@
 import os
 
+import sentry_sdk
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
-import sentry_sdk
 
 sentry_dsn = os.getenv("SENTRY_DSN")
 if sentry_dsn:
