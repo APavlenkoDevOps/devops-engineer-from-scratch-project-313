@@ -4,7 +4,7 @@ from typing import List
 
 import sentry_sdk
 from fastapi import Depends, FastAPI, HTTPException, status
-from fastapi.responses import RedirectResponse
+from fastapi.responses import PlainTextResponse, RedirectResponse
 from sqlmodel import Session, select
 
 from database import create_db_and_tables, get_session
@@ -35,7 +35,7 @@ def build_response(link: Link) -> LinkResponse:
     )
 
 
-@app.get("/ping")
+@app.get("/ping", response_class=PlainTextResponse)
 def ping():
     return "pong"
 
