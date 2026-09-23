@@ -81,3 +81,28 @@ def test_crud_links(client: TestClient):
     # 7. Check 404 after delete
     response = client.get("/api/links/1")
     assert response.status_code == 404
+
+
+def test_pagination(client: TestClient):
+    # Создаем 15 записей для проверки
+    for i in range(15):
+        client.post(
+            "/api/links",
+            json={
+                "original_url": f"https://example.com/{i}",
+                "short_name": f"link_{i}",
+            },
+        )
+
+    # Запрашиваем 0-10
+    response = client.get("/api/links?range=[0,10]")
+    assert response.status_code == 200
+    assert response.headers["content-range"] == "links 0-10/15"
+    assert len(response.json()) == 10
+
+    # Запрашиваем 5-10
+    response = client.get("/api/links?range=[5,10]")
+    assert response.status_code == 200
+    assert response.headers["content-range"] == "links 5-10/15"
+    assert len(response.json()) == 5
+    assert response.json()[0]["short_name"] == "link_5"
