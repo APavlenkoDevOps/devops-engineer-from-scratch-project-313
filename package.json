@@ -1,0 +1,30 @@
+{
+  "name": "devops-engineer-from-scratch-project-313",
+  "version": "1.0.0",
+  "description": "[![Actions Status](https://github.com/APavlenkoDevOps/devops-engineer-from-scratch-project-313/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/APavlenkoDevOps/devops-engineer-from-scratch-project-313/actions)",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/APavlenkoDevOps/devops-engineer-from-scratch-project-313.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/APavlenkoDevOps/devops-engineer-from-scratch-project-313/issues"
+  },
+  "homepage": "https://github.com/APavlenkoDevOps/devops-engineer-from-scratch-project-313#readme",
+  "dependencies": {
+    "@hexlet/project-devops-deploy-crud-frontend": "^1.0.4"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5"
+  }
+}
