@@ -1,20 +1,39 @@
 FROM python:3.12-slim
 
-# Устанавливаем curl и собираем uv
-RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
-ADD https://astral.sh/uv/install.sh /uv-installer.sh
-RUN sh /uv-installer.sh && rm /uv-installer.sh
+# Установка Nginx, Node.js и npm
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nginx \
+    curl \
+    gnupg \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt-get/lists/*
 
-ENV PATH="/root/.local/bin/:$PATH"
+# Установка uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock ./
+# Копируем зависимости Python и Node.js
+COPY pyproject.toml uv.lock package.json package-lock.json ./
 
-RUN uv sync --frozen --no-dev
+# Устанавливаем зависимости Python и фронтенд
+RUN uv sync --frozen --no-cache
+RUN npm ci
 
+# Копируем фронтенд в директорию Nginx
+RUN mkdir -p /var/www/html && \
+    cp -r ./node_modules/@hexlet/project-devops-deploy-crud-frontend/dist/. /var/www/html/
+
+# Копируем исходники бэкенда и конфигурации
 COPY . .
 
-EXPOSE 8080
+# Копируем конфиг Nginx
+COPY nginx.conf /etc/nginx/sites-available/default
 
-CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+# Указываем PATH для виртуального окружения Python
+ENV PATH="/app/.venv/bin:$PATH"
+
+EXPOSE 80
+
+CMD ["/app/start.sh"]
