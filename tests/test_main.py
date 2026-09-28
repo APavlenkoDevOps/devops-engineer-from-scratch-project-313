@@ -106,3 +106,44 @@ def test_pagination(client: TestClient):
     assert response.headers["content-range"] == "links 5-10/15"
     assert len(response.json()) == 5
     assert response.json()[0]["short_name"] == "link_5"
+    
+def test_create_link_duplicate_short_name(client: TestClient):
+    payload = {"original_url": "https://example.com/a", "short_name": "same"}
+    assert client.post("/api/links", json=payload).status_code == 201
+
+    response = client.post("/api/links", json=payload)
+    assert response.status_code == 422
+    assert isinstance(response.json()["detail"], str)
+
+
+def test_create_link_invalid_body(client: TestClient):
+    response = client.post("/api/links", json={"short_name": "no_url"})
+    assert response.status_code == 422
+    assert "detail" in response.json()
+
+
+def test_update_link_invalid_body(client: TestClient):
+    client.post(
+        "/api/links",
+        json={"original_url": "https://example.com/a", "short_name": "upd"},
+    )
+    response = client.put("/api/links/1", json={"short_name": 123456})
+    assert response.status_code == 422
+    assert "detail" in response.json()
+
+
+def test_missing_link_returns_404(client: TestClient):
+    payload = {"original_url": "https://example.com/a", "short_name": "x"}
+
+    assert client.get("/api/links/999").status_code == 404
+    assert client.put("/api/links/999", json=payload).status_code == 404
+    assert client.delete("/api/links/999").status_code == 404
+
+    response = client.get("/api/links/999")
+    assert isinstance(response.json()["detail"], str)
+
+
+def test_redirect_unknown_short_name(client: TestClient):
+    response = client.get("/r/unknown", follow_redirects=False)
+    assert response.status_code == 404
+    assert "detail" in response.json()

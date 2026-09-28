@@ -34,7 +34,7 @@ COPY nginx.conf /etc/nginx/sites-available/default
 
 # Указываем PATH для виртуального окружения Python
 ENV PATH="/app/.venv/bin:$PATH"
-ENV PYTHONPATH="/app/code"
+ENV PYTHONPATH="/app/src"
 
 EXPOSE 80
 
