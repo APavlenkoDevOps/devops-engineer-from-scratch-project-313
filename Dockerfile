@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.14-slim
 
 # Установка make, Nginx, Node.js и npm
 RUN apt-get update && apt-get install -y --no-install-recommends \
