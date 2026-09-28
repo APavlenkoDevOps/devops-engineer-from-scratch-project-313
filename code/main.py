@@ -1,5 +1,6 @@
 import json
 import os
+import logging
 from contextlib import asynccontextmanager
 from typing import List, Optional
 
@@ -19,7 +20,10 @@ if sentry_dsn:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    create_db_and_tables()
+    try:
+        create_db_and_tables()
+    except Exception as e:
+        logging.error(f"Error creating DB tables on startup: {e}")
     yield
 
 
@@ -37,7 +41,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["Content-Range"],  # Передаем Content-Range для пагинации на фронте
+    expose_headers=["Content-Range"],  
 )
 
 BASE_URL = os.getenv("BASE_URL", "http://localhost:8080").rstrip("/")
@@ -49,6 +53,11 @@ def build_response(link: Link) -> LinkResponse:
         short_name=link.short_name,
         short_url=f"{BASE_URL}/r/{link.short_name}",
     )
+
+
+@app.get("/")
+def root():
+    return {"status": "ok"}
 
 
 @app.get("/ping", response_class=PlainTextResponse)
@@ -63,8 +72,6 @@ def redirect_to_url(short_name: str, session: Session = Depends(get_session)):
     if not link:
         raise HTTPException(status_code=404, detail="Link not found")
     return RedirectResponse(url=link.original_url, status_code=status.HTTP_302_FOUND)
-
-
 
 
 @app.get("/api/links", response_model=List[LinkResponse])
@@ -104,6 +111,7 @@ def get_links(
     response.headers["Content-Range"] = f"{unit} {start}-{end}/{total_count}"
     
     return [build_response(link) for link in links]
+
 
 @app.post(
     "/api/links",

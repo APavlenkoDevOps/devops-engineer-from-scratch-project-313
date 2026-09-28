@@ -18,13 +18,8 @@ services:
     command: make run
     ports:
       - "8000:8000"
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres_password@db:5432/postgres_db
-    depends_on:
-      db:
-        condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      test: ["CMD-SHELL", "curl -f http://127.0.0.1:8000/ || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 5
