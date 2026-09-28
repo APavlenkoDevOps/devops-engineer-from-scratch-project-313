@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg \
     && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
-    && rm -rf /var/lib/apt-get/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
 # Установка uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
@@ -34,6 +34,7 @@ COPY nginx.conf /etc/nginx/sites-available/default
 
 # Указываем PATH для виртуального окружения Python
 ENV PATH="/app/.venv/bin:$PATH"
+ENV PYTHONPATH="/app/code"
 
 EXPOSE 80
 
