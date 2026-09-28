@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: devops-engineer-from-scratch-project-313
+    env: docker
+    envVars:
+      - key: PORT
+        value: 80
+      - key: BASE_URL
+        value: https://devops-engineer-from-scratch-project-313-ps1s.onrender.com
