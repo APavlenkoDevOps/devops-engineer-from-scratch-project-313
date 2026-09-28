@@ -21,4 +21,4 @@ dev = [
     "ruff>=0.16.6",
 ]
 [tool.pytest.ini_options]
-pythonpath = ["."]
+pythonpath = [".", "code"]

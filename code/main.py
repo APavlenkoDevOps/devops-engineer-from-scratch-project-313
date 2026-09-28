@@ -41,10 +41,11 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["Content-Range"],  
+    expose_headers=["Content-Range"],
 )
 
 BASE_URL = os.getenv("BASE_URL", "http://localhost:8080").rstrip("/")
+
 
 def build_response(link: Link) -> LinkResponse:
     return LinkResponse(
@@ -109,7 +110,7 @@ def get_links(
     unit = "links" if "testclient" in user_agent.lower() else "items"
 
     response.headers["Content-Range"] = f"{unit} {start}-{end}/{total_count}"
-    
+
     return [build_response(link) for link in links]
 
 
