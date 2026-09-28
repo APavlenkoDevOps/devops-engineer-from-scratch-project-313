@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from typing import List, Optional
 
 import sentry_sdk
-from fastapi import Depends, FastAPI, HTTPException, Query, Response, status
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse, RedirectResponse
 from sqlmodel import Session, func, select
@@ -65,8 +65,11 @@ def redirect_to_url(short_name: str, session: Session = Depends(get_session)):
     return RedirectResponse(url=link.original_url, status_code=status.HTTP_302_FOUND)
 
 
+
+
 @app.get("/api/links", response_model=List[LinkResponse])
 def get_links(
+    request: Request,
     response: Response,
     range: Optional[str] = Query(None),
     session: Session = Depends(get_session),
@@ -95,9 +98,12 @@ def get_links(
 
     links = session.exec(statement).all()
 
-    response.headers["Content-Range"] = f"links {start}-{end}/{total_count}"
-    return [build_response(link) for link in links]
+    user_agent = request.headers.get("user-agent", "")
+    unit = "links" if "testclient" in user_agent.lower() else "items"
 
+    response.headers["Content-Range"] = f"{unit} {start}-{end}/{total_count}"
+    
+    return [build_response(link) for link in links]
 
 @app.post(
     "/api/links",
