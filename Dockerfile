@@ -1,7 +1,8 @@
 FROM python:3.12-slim
 
-# Установка Nginx, Node.js и npm
+# Установка make, Nginx, Node.js и npm
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    make \
     nginx \
     curl \
     gnupg \
