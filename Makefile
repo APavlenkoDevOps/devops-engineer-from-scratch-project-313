@@ -9,7 +9,7 @@ lint:
 	uv run ruff check .
 
 test:
-	PYTHONPATH=code uv run pytest
+	uv run pytest
 
 check: lint test
 
