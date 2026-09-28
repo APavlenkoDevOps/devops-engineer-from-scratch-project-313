@@ -3,7 +3,7 @@
 FRAMEWORK ?= fastapi
 
 dev:
-	npx concurrently "PYTHONPATH=code uv run uvicorn main:app --host 0.0.0.0 --port 8080 --reload" "npx start-hexlet-devops-deploy-crud-frontend"
+	npx concurrently "PYTHONPATH=src uv run uvicorn main:app --host 0.0.0.0 --port 8080 --reload" "npx start-hexlet-devops-deploy-crud-frontend"
 
 lint:
 	uv run ruff check .
