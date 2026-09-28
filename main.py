@@ -90,12 +90,14 @@ def get_links(
                 detail="Invalid range format. Expected JSON array like [0,10]",
             )
 
-    limit = max(0, end - start)
+    limit = max(0, end - start + 1)
     statement = statement.offset(start).limit(limit)
 
     links = session.exec(statement).all()
 
-    response.headers["Content-Range"] = f"links {start}-{end}/{total_count}"
+    actual_end = start + len(links) - 1 if links else start
+    response.headers["Content-Range"] = f"items {start}-{actual_end}/{total_count}"
+    
     return [build_response(link) for link in links]
 
 
