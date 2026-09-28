@@ -14,4 +14,4 @@ test:
 check: lint test
 
 run:
-	PYTHONPATH=code uv run uvicorn main:app --host 0.0.0.0 --port 8080
+	PYTHONPATH=src uv run uvicorn main:app --host 0.0.0.0 --port 8080
