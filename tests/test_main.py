@@ -1,6 +1,5 @@
 import pytest
 from fastapi.testclient import TestClient
-from main import app
 from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.pool import StaticPool
 
