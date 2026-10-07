@@ -40,3 +40,7 @@ app.add_middleware(
 )
 
 app.include_router(router)
+
+@app.get("/debug-sentry")
+def trigger_error():
+    return 1 / 0
